@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: TenneTeu-py
+message: >-
+  "If you use this software, please cite it as
+  below."
+type: software
+authors:
+  - given-names: Frank
+    family-names: Boerman
+    email: frank@fboerman.nl
