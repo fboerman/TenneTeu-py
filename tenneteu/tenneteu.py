@@ -3,7 +3,7 @@ import pandas as pd
 from io import StringIO
 
 __title__ = "tenneteu-py"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -31,7 +31,8 @@ class TenneTeuClient:
         stream = StringIO(csv_text)
         stream.seek(0)
         df = pd.read_csv(stream, sep=',')
-        df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc']).dt.tz_localize('europe/amsterdam')
+        df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('europe/amsterdam') \
+                          + (df['Isp']-1) * pd.Timedelta(minutes=15)
         return df.drop(columns=[
             'Timeinterval Start Loc',
             'Timeinterval End Loc'
