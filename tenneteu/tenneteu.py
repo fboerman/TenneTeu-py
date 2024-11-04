@@ -3,7 +3,7 @@ import pandas as pd
 from io import StringIO
 
 __title__ = "tenneteu-py"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -27,12 +27,12 @@ class TenneTeuClient:
         r.raise_for_status()
         return r.text
 
-    def _base_parse(self, csv_text) -> pd.DataFrame:
+    def _base_parse(self, csv_text, minutes) -> pd.DataFrame:
         stream = StringIO(csv_text)
         stream.seek(0)
         df = pd.read_csv(stream, sep=',')
         df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('europe/amsterdam') \
-                          + (df['Isp']-1) * pd.Timedelta(minutes=15)
+                          + (df['Isp']-1) * pd.Timedelta(minutes=minutes)
         return df.drop(columns=[
             'Timeinterval Start Loc',
             'Timeinterval End Loc'
@@ -44,7 +44,8 @@ class TenneTeuClient:
                 url='balance-delta',
                 d_from=d_from,
                 d_to=d_to
-            )
+            ),
+            minutes=1
         )
 
     def query_settlement_prices(self, d_from: pd.Timestamp, d_to: pd.Timestamp) -> pd.DataFrame:
@@ -53,7 +54,8 @@ class TenneTeuClient:
                 url='settlement-prices',
                 d_from=d_from,
                 d_to=d_to
-            )
+            ),
+            minutes=15
         )
 
     def query_merit_order_list(self, d_from: pd.Timestamp, d_to: pd.Timestamp) -> pd.DataFrame:
@@ -62,7 +64,8 @@ class TenneTeuClient:
                 url='merit-order-list',
                 d_from=d_from,
                 d_to=d_to
-            )
+            ),
+            minutes=15
         )
 
     def query_current_imbalance(self):
