@@ -29,7 +29,7 @@ jobs:
       - name: Install test depedencies
         run : |
           uv pip install --system pytest
-      - name: Test with pytest
+      - name: Test with pytest python-dotenv
         env:
           TENNET_API_KEY: ${{ secrets.api_key }}
         run: |
