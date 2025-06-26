@@ -1,5 +1,5 @@
 # TenneTeu-py
-Python client for the official TenneT.eu api. Register for an API key go [here](https://www.tennet.eu/registration-api-token).
+Python client for the official TenneT.eu api. Register for an API key go to the [API Develop Portal](https://developer.tennet.eu/).
 
 If you want to mass download TenneT data, then don't do it through the API, you **will** hit rate limiters. Instead use the download page [here](https://www.tennet.eu/nl-en/grids-and-markets/transparency-data-netherlands/download-page-transparency) on the TenneT site.
 

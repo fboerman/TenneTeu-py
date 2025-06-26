@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
@@ -11,9 +10,9 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 with open(path.join(here, 'tenneteu', 'tenneteu.py'), encoding='utf-8') as f:
     lines = f.readlines()
-    for l in lines:
-        if l.startswith('__version__'):
-            __version__ = l.split('"')[1]
+    for line in lines:
+        if line.startswith('__version__'):
+            __version__ = line.split('"')[1]
 
 setup(
     name='tenneteu-py',
