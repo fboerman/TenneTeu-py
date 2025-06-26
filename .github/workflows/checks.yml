@@ -28,7 +28,7 @@ jobs:
           uv pip install --system -r requirements.txt
       - name: Install test depedencies
         run : |
-          uv pip install pytest
+          uv pip install --system pytest
       - name: Test with pytest
         env:
           TENNET_API_KEY: ${{ secrets.api_key }}
