@@ -35,7 +35,7 @@ target-version = "py312"
 
 [lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
-select = ["E", "W", "F", "ISC", "RET", "PD002", "PD003", "PD004", "UP"]
+select = ["E", "W", "F", "ISC", "RET", "PD002", "PD003", "PD004", "UP", "PT"]
 ignore = ["E722", "F403", "F405", "E731", "E501", "UP015"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

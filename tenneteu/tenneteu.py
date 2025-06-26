@@ -1,9 +1,10 @@
 import requests
 import pandas as pd
 from io import StringIO
+import os
 
 __title__ = "tenneteu-py"
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -11,7 +12,13 @@ __license__ = "MIT"
 class TenneTeuClient:
     BASEURL = "https://api.tennet.eu/publications/v1/"
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str = None, acce: bool = False):
+        if api_key is None:
+            api_key = os.environ.get('TENNET_API_KEY')
+            if api_key is None:
+                raise Exception('Please provide an api key either through function argument or env')
+        if acce:
+            self.BASEURL = self.BASEURL.replace('api.', 'api.acc.')
         self.s = requests.Session()
         self.s.headers.update({
             'user-agent': f'tenneteu-py {__version__} (github.com/fboerman/TenneTeu-py)',
@@ -62,6 +69,26 @@ class TenneTeuClient:
         return self._base_parse(
             self._base_query(
                 url='merit-order-list',
+                d_from=d_from,
+                d_to=d_to
+            ),
+            minutes=15
+        )
+
+    def query_settled_imbalance_volumes(self, d_from: pd.Timestamp, d_to: pd.Timestamp) -> pd.DataFrame:
+        return self._base_parse(
+            self._base_query(
+                url='settled-imbalance-volumes',
+                d_from=d_from,
+                d_to=d_to
+            ),
+            minutes=15
+        )
+
+    def query_frequency_reserve_activations(self, d_from: pd.Timestamp, d_to: pd.Timestamp) -> pd.DataFrame:
+        return self._base_parse(
+            self._base_query(
+                url='frequency-restoration-reserve-activations',
                 d_from=d_from,
                 d_to=d_to
             ),

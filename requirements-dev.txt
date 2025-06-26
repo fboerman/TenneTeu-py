@@ -1,2 +1,4 @@
 ruff
 pre-commit
+pytest
+python-dotenv

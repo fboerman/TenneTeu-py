@@ -17,5 +17,20 @@ jobs:
         with:
           version: "latest"
           args: "--version"
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
       - name: Run formatting checks
         run: ruff check
+      - name: Install main dependencies
+        run: |
+          uv pip install --system -r requirements.txt
+      - name: Install test depedencies
+        run : |
+          uv pip install pytest
+      - name: Test with pytest
+        env:
+          TENNET_API_KEY: ${{ secrets.api_key }}
+        run: |
+          pytest
