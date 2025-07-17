@@ -13,12 +13,12 @@ def client():
 
 @pytest.fixture
 def d_from():
-    return pd.Timestamp('2025-01-01 00:00', tz='europe/amsterdam')
+    return pd.Timestamp('2025-07-01 00:00', tz='europe/amsterdam')
 
 
 @pytest.fixture
 def d_to():
-    return pd.Timestamp('2025-01-02 00:00', tz='europe/amsterdam')
+    return pd.Timestamp('2025-07-02 00:00', tz='europe/amsterdam')
 
 
 def test_balance_delta(client, d_from, d_to):
@@ -32,7 +32,7 @@ def test_balance_delta(client, d_from, d_to):
 
 def test_current_imbalance(client, d_from, d_to):
     df = client.query_current_imbalance()
-    assert 27 <= len(df) <= 28
+    assert 29 <= len(df) <= 30
     assert list(df.columns) == ['Isp', 'Power In Activated Afrr', 'Power Out Activated Afrr', 'Power In Igcc',
                                 'Power Out Igcc', 'Power In Mfrrda', 'Power Out Mfrrda',
                                 'Highest Upward Regulation Price', 'Lowest Downward Regulation Price', 'Mid Price',
@@ -49,7 +49,7 @@ def test_settlement_prices(client, d_from, d_to):
 
 def test_merit_order_list(client, d_from, d_to):
     df = client.query_merit_order_list(d_from=d_from, d_to=d_to)
-    assert len(df) == 18085
+    assert len(df) == 10571
     assert list(df.columns) == ['Isp', 'Quantity Measurement Unit Name', 'Price Measurement Unit Name',
                                 'Currency Unit Name', 'Capacity Threshold', 'Price Down', 'Price Up']
 

@@ -2,9 +2,10 @@ import requests
 import pandas as pd
 from io import StringIO
 import os
+from .exceptions import NoMatchingDataError
 
 __title__ = "tenneteu-py"
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -38,6 +39,8 @@ class TenneTeuClient:
         stream = StringIO(csv_text)
         stream.seek(0)
         df = pd.read_csv(stream, sep=',')
+        if len(df) == 0:
+            raise NoMatchingDataError
         df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('europe/amsterdam') \
                           + (df['Isp']-1) * pd.Timedelta(minutes=minutes)
         return df.drop(columns=[
