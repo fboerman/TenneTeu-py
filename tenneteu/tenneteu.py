@@ -5,7 +5,7 @@ import os
 from .exceptions import NoMatchingDataError
 
 __title__ = "tenneteu-py"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -41,7 +41,7 @@ class TenneTeuClient:
         df = pd.read_csv(stream, sep=',')
         if len(df) == 0:
             raise NoMatchingDataError
-        df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('europe/amsterdam') \
+        df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('Europe/Amsterdam') \
                           + (df['Isp']-1) * pd.Timedelta(minutes=minutes)
         return df.drop(columns=[
             'Timeinterval Start Loc',
@@ -99,6 +99,6 @@ class TenneTeuClient:
         )
 
     def query_current_imbalance(self):
-        d_to = pd.Timestamp.now(tz='europe/amsterdam')
+        d_to = pd.Timestamp.now(tz='Europe/Amsterdam')
         d_from = d_to - pd.Timedelta(minutes=32)
         return self.query_balance_delta(d_from, d_to)

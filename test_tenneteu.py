@@ -13,12 +13,12 @@ def client():
 
 @pytest.fixture
 def d_from():
-    return pd.Timestamp('2025-07-01 00:00', tz='europe/amsterdam')
+    return pd.Timestamp('2025-07-01 00:00', tz='Europe/Amsterdam')
 
 
 @pytest.fixture
 def d_to():
-    return pd.Timestamp('2025-07-02 00:00', tz='europe/amsterdam')
+    return pd.Timestamp('2025-07-02 00:00', tz='Europe/Amsterdam')
 
 
 def test_balance_delta(client, d_from, d_to):
