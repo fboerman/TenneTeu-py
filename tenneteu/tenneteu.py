@@ -5,7 +5,7 @@ import os
 from .exceptions import NoMatchingDataError
 
 __title__ = "tenneteu-py"
-__version__ = "0.1.5"
+__version__ = "0.2.0"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -35,14 +35,25 @@ class TenneTeuClient:
         r.raise_for_status()
         return r.text
 
-    def _base_parse(self, csv_text, minutes) -> pd.DataFrame:
+    def _base_query_noparams(self, url: str) -> str:
+        r = self.s.get(self.BASEURL + url)
+        r.raise_for_status()
+        return r.text
+
+    def _base_parse(self, csv_text, minutes=None, seconds=None) -> pd.DataFrame:
         stream = StringIO(csv_text)
         stream.seek(0)
         df = pd.read_csv(stream, sep=',')
         if len(df) == 0:
             raise NoMatchingDataError
-        df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('Europe/Amsterdam') \
+        if seconds is not None:
+            df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('Europe/Amsterdam') \
+                              + (df['Isp'] - 1) * pd.Timedelta(seconds=seconds)
+        elif minutes is not None:
+            df['timestamp'] = pd.to_datetime(df['Timeinterval Start Loc'].str.split('T').str[0]).dt.tz_localize('Europe/Amsterdam') \
                           + (df['Isp']-1) * pd.Timedelta(minutes=minutes)
+        else:
+            raise Exception('Please specify either the minutes or the seconds of the ISP')
         return df.drop(columns=[
             'Timeinterval Start Loc',
             'Timeinterval End Loc'
@@ -51,11 +62,11 @@ class TenneTeuClient:
     def query_balance_delta(self, d_from: pd.Timestamp, d_to: pd.Timestamp) -> pd.DataFrame:
         return self._base_parse(
             self._base_query(
-                url='balance-delta',
+                url='balance-delta-high-res',
                 d_from=d_from,
                 d_to=d_to
             ),
-            minutes=1
+            seconds=12
         )
 
     def query_settlement_prices(self, d_from: pd.Timestamp, d_to: pd.Timestamp) -> pd.DataFrame:
@@ -99,6 +110,11 @@ class TenneTeuClient:
         )
 
     def query_current_imbalance(self):
-        d_to = pd.Timestamp.now(tz='Europe/Amsterdam')
-        d_from = d_to - pd.Timedelta(minutes=32)
-        return self.query_balance_delta(d_from, d_to)
+        csv_text = self._base_query_noparams(url='balance-delta-high-res/latest')
+        stream = StringIO(csv_text)
+        stream.seek(0)
+        df = pd.read_csv(stream, sep=',')
+        if len(df) == 0:
+            raise NoMatchingDataError
+        df['timestamp'] = pd.to_datetime(df['Timeinterval Start Utc'], utc=True).dt.tz_convert('Europe/Amsterdam')
+        return df.drop(columns=['Timeinterval Start Utc', 'Timeinterval End Utc']).set_index('timestamp')

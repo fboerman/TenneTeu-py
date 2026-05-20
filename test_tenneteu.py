@@ -27,16 +27,18 @@ def test_balance_delta(client, d_from, d_to):
     assert list(df.columns) == ['Isp', 'Power In Activated Afrr', 'Power Out Activated Afrr', 'Power In Igcc',
                                 'Power Out Igcc', 'Power In Mfrrda', 'Power Out Mfrrda',
                                 'Highest Upward Regulation Price', 'Lowest Downward Regulation Price', 'Mid Price',
-                                'Picasso Contribution Power In', 'Picasso Contribution Power Out']
+                                'Picasso Contribution Power In', 'Picasso Contribution Power Out',
+                                'Mari Contribution Power In', 'Mari Contribution Power Out']
 
 
 def test_current_imbalance(client, d_from, d_to):
     df = client.query_current_imbalance()
-    assert 29 <= len(df) <= 30
+    assert 149 <= len(df) <= 150
     assert list(df.columns) == ['Isp', 'Power In Activated Afrr', 'Power Out Activated Afrr', 'Power In Igcc',
                                 'Power Out Igcc', 'Power In Mfrrda', 'Power Out Mfrrda',
                                 'Highest Upward Regulation Price', 'Lowest Downward Regulation Price', 'Mid Price',
-                                'Picasso Contribution Power In', 'Picasso Contribution Power Out']
+                                'Picasso Contribution Power In', 'Picasso Contribution Power Out',
+                                'Mari Contribution Power In', 'Mari Contribution Power Out']
 
 
 def test_settlement_prices(client, d_from, d_to):
