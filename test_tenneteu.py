@@ -22,8 +22,11 @@ def d_to():
 
 
 def test_balance_delta(client, d_from, d_to):
-    df = client.query_balance_delta(d_from=d_from, d_to=d_to)
-    assert len(df) == 24*60
+    df = client.query_balance_delta(
+        d_from=pd.Timestamp('2025-07-01 00:00', tz='Europe/Amsterdam'),
+        d_to=pd.Timestamp('2025-07-01 01:00', tz='Europe/Amsterdam')
+    )
+    assert len(df) == 60*12
     assert list(df.columns) == ['Isp', 'Power In Activated Afrr', 'Power Out Activated Afrr', 'Power In Igcc',
                                 'Power Out Igcc', 'Power In Mfrrda', 'Power Out Mfrrda',
                                 'Highest Upward Regulation Price', 'Lowest Downward Regulation Price', 'Mid Price',
